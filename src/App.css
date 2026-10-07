@@ -1,0 +1,3256 @@
+/* ==================================================================
+   QookiV design system
+   Brand ramp sampled from the QookiX cookie icon: primary #C97640.
+   ================================================================== */
+
+:root {
+  --accent: #c97640;
+  --accent-hover: #e29a5a;
+  --accent-deep: #a5532e;
+  --accent-soft: rgba(201, 118, 64, 0.16);
+  --accent-line: rgba(201, 118, 64, 0.34);
+
+  --bg-0: #0b0d12;
+  --bg-1: #10131a;
+  --bg-2: #151924;
+  --bg-3: #1b2130;
+  --bg-hover: rgba(255, 255, 255, 0.05);
+
+  --text-1: #f2f3f7;
+  --text-2: #c6c8d2;
+  --text-3: #8b8e9c;
+
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.14);
+
+  --ok: #6fcf97;
+  --warn: #e8b84b;
+  --danger: #e86a7c;
+
+  --radius: 10px;
+  --radius-sm: 7px;
+
+  --font: "Segoe UI Variable Text", "Segoe UI", "Microsoft YaHei", "PingFang SC", system-ui,
+    sans-serif;
+  --font-mono: "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg-0);
+  color: var(--text-1);
+  font-family: var(--font);
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  user-select: none;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+  background-clip: content-box;
+}
+
+/* ==================================================================
+   Shell layout
+   ================================================================== */
+
+.qv-app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--bg-0), #090a0e);
+}
+
+.qv-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 48px;
+  padding: 0 12px;
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--line);
+  flex: none;
+}
+
+.qv-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 250px;
+}
+
+.qv-brand__logo {
+  width: 26px;
+  height: 26px;
+  filter: drop-shadow(0 2px 5px rgba(201, 118, 64, 0.35));
+}
+
+.qv-brand__name {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  background: linear-gradient(96deg, var(--accent-hover), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.qv-brand__tag {
+  font-size: 11px;
+  color: var(--text-3);
+  padding-left: 8px;
+  border-left: 1px solid var(--line-strong);
+}
+
+.qv-titlebar__center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+
+.qv-doc {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  color: var(--text-2);
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--line);
+  max-width: 340px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/*
+ * Editable document title.
+ *
+ * `.qv-doc` was a plain span; it is now a button (editable) or a wrapper around
+ * an input (editing), so the button resets and the input chrome are both here.
+ */
+.qv-doc--button {
+  cursor: text;
+  font: inherit;
+  text-align: center;
+  transition: background 0.14s, border-color 0.14s;
+}
+
+.qv-doc--button:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: var(--line-strong);
+}
+
+.qv-doc__text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* The pencil only appears on hover, so the title reads as text at rest. */
+.qv-doc__pencil {
+  flex: none;
+  color: var(--text-3);
+  opacity: 0;
+  transition: opacity 0.14s;
+}
+
+.qv-doc--button:hover .qv-doc__pencil {
+  opacity: 1;
+}
+
+.qv-doc--editing {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.qv-doc__input {
+  width: 300px;
+  max-width: 55vw;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text-1);
+  font: inherit;
+  text-align: center;
+}
+
+.qv-doc__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: none;
+}
+
+.qv-titlebar__right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 250px;
+  margin-left: auto;
+  justify-content: flex-end;
+}
+
+.qv-titlebar__window {
+  display: flex;
+  align-items: center;
+  margin-left: 4px;
+  padding-left: 8px;
+  border-left: 1px solid var(--line);
+}
+
+.qv-win-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.12s, color 0.12s;
+}
+
+.qv-win-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-1);
+}
+
+.qv-win-btn--close:hover {
+  background: #e23c3c;
+  color: #fff;
+}
+
+.qv-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 46px;
+  padding: 0 12px;
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--line);
+  flex: none;
+}
+
+.qv-toolbar__group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.qv-toolbar__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  color: var(--text-3);
+  margin-right: 4px;
+}
+
+.qv-toolbar__spacer {
+  flex: 1;
+}
+
+.qv-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.qv-side {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-1);
+  min-height: 0;
+  flex: none;
+}
+
+.qv-side--left {
+  width: 306px;
+  border-right: 1px solid var(--line);
+}
+
+.qv-side--right {
+  width: 330px;
+  border-left: 1px solid var(--line);
+}
+
+.qv-side__tabs {
+  padding: 10px;
+  border-bottom: 1px solid var(--line);
+  flex: none;
+}
+
+.qv-center {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: #08090d;
+}
+
+/* ==================================================================
+   Buttons
+   ================================================================== */
+
+.qv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 11px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-2);
+  font-size: 12.5px;
+  font-weight: 500;
+  transition: background 0.14s, border-color 0.14s, color 0.14s;
+  white-space: nowrap;
+}
+
+.qv-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-1);
+}
+
+.qv-btn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.qv-btn--primary {
+  background: linear-gradient(180deg, var(--accent-hover), var(--accent));
+  border-color: transparent;
+  color: #26140a;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(201, 118, 64, 0.28);
+}
+
+.qv-btn--primary:hover:not(:disabled) {
+  background: linear-gradient(180deg, #edaa6c, var(--accent-hover));
+  color: #1c0f07;
+}
+
+.qv-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-3);
+}
+
+.qv-btn--ghost:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--text-1);
+}
+
+.qv-btn--danger {
+  border-color: rgba(232, 106, 124, 0.5);
+  color: var(--danger);
+}
+
+.qv-btn--danger:hover:not(:disabled) {
+  background: rgba(232, 106, 124, 0.14);
+}
+
+.qv-btn--full {
+  width: 100%;
+  justify-content: center;
+}
+
+.qv-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-3);
+  transition: background 0.14s, color 0.14s;
+  flex: none;
+}
+
+.qv-icon-btn:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--text-1);
+}
+
+.qv-icon-btn--on {
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+  border-color: var(--accent-line);
+}
+
+.qv-icon-btn--danger:hover:not(:disabled) {
+  background: rgba(232, 106, 124, 0.16);
+  color: var(--danger);
+}
+
+.qv-icon-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.qv-link {
+  background: none;
+  border: none;
+  color: var(--accent-hover);
+  text-decoration: underline;
+  padding: 0 2px;
+  font-size: inherit;
+}
+
+/* ==================================================================
+   Segmented / select / toggle
+   ================================================================== */
+
+.qv-seg {
+  display: inline-flex;
+  padding: 2px;
+  gap: 2px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  width: 100%;
+}
+
+.qv-seg__item {
+  flex: 1;
+  height: 26px;
+  border: none;
+  background: transparent;
+  color: var(--text-3);
+  border-radius: 5px;
+  font-size: 12.5px;
+  transition: background 0.14s, color 0.14s;
+}
+
+.qv-seg__item:hover {
+  color: var(--text-1);
+}
+
+.qv-seg__item--on {
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+  box-shadow: inset 0 0 0 1px var(--accent-line);
+}
+
+.qv-select {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.qv-select select {
+  appearance: none;
+  width: 100%;
+  height: 28px;
+  padding: 0 24px 0 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-strong);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--text-1);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.qv-select select:focus {
+  outline: none;
+  border-color: var(--accent-line);
+}
+
+.qv-select__caret {
+  position: absolute;
+  right: 7px;
+  pointer-events: none;
+  color: var(--text-3);
+}
+
+.qv-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.qv-toggle__knob {
+  position: relative;
+  width: 34px;
+  height: 19px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.13);
+  transition: background 0.16s;
+  flex: none;
+}
+
+.qv-toggle__knob::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.16s;
+}
+
+.qv-toggle--on .qv-toggle__knob {
+  background: var(--accent);
+}
+
+.qv-toggle--on .qv-toggle__knob::after {
+  transform: translateX(15px);
+}
+
+.qv-toggle__label {
+  font-size: 12.5px;
+  color: var(--text-2);
+}
+
+/* ==================================================================
+   Fields
+   ================================================================== */
+
+.qv-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 11px;
+}
+
+.qv-field--inline {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.qv-field__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  min-height: 15px;
+}
+
+.qv-field__label {
+  font-size: 11.5px;
+  color: var(--text-3);
+  letter-spacing: 0.01em;
+}
+
+.qv-field__body {
+  min-width: 0;
+}
+
+.qv-field__hint {
+  font-size: 10.5px;
+  color: var(--text-3);
+  opacity: 0.75;
+  line-height: 1.45;
+}
+
+.qv-kf {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-3);
+  opacity: 0.55;
+  transition: all 0.14s;
+  flex: none;
+}
+
+.qv-kf:hover {
+  opacity: 1;
+  background: var(--bg-hover);
+}
+
+.qv-kf--on {
+  opacity: 1;
+  color: var(--accent-hover);
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+}
+
+/* ---- 可增删的条目列表（模板里的"面板 / 功能项"） ------------------- */
+
+.qv-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.qv-list__item {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.18);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.qv-list__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  /* 条目头部只放序号和工具按钮，所以压扁一点 */
+  margin-bottom: -1px;
+}
+
+.qv-list__index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 99px;
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+  font-size: 10.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.qv-list__tools {
+  display: flex;
+  gap: 2px;
+}
+
+.qv-list__tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-3);
+  transition: background 0.14s, color 0.14s;
+}
+
+.qv-list__tool:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--text-1);
+}
+
+.qv-list__tool:disabled {
+  opacity: 0.28;
+  cursor: not-allowed;
+}
+
+.qv-list__tool--danger:hover:not(:disabled) {
+  background: rgba(232, 106, 124, 0.14);
+  color: var(--danger);
+}
+
+/* 上移按钮把同一个箭头转过来用，省一个图标 */
+.qv-list__up {
+  transform: rotate(180deg);
+}
+
+.qv-list__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.qv-list__count {
+  font-size: 10.5px;
+  color: var(--text-3);
+  opacity: 0.7;
+  font-variant-numeric: tabular-nums;
+}
+
+.qv-input {
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-strong);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--text-1);
+  user-select: text;
+}
+
+.qv-input:focus {
+  outline: none;
+  border-color: var(--accent-line);
+  box-shadow: 0 0 0 2px rgba(201, 118, 64, 0.14);
+}
+
+.qv-input--area {
+  height: auto;
+  padding: 7px 8px;
+  line-height: 1.55;
+  resize: vertical;
+  min-height: 60px;
+}
+
+.qv-input--number {
+  text-align: center;
+  padding: 0 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.qv-number {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  width: 100%;
+}
+
+.qv-number__step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 26px;
+  border-radius: 5px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-3);
+  flex: none;
+}
+
+.qv-number__step:hover {
+  background: var(--bg-hover);
+  color: var(--text-1);
+}
+
+.qv-number__suffix {
+  font-size: 11px;
+  color: var(--text-3);
+  flex: none;
+}
+
+.qv-slider {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+}
+
+.qv-slider input[type="range"] {
+  flex: 1;
+  min-width: 0;
+  appearance: none;
+  height: 4px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.13);
+  cursor: pointer;
+}
+
+.qv-slider input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid #14171f;
+  box-shadow: 0 0 0 1px var(--accent-line);
+}
+
+.qv-slider__value {
+  font-size: 11px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+  min-width: 34px;
+  text-align: right;
+  flex: none;
+}
+
+.qv-grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* Colour picker */
+
+.qv-color {
+  position: relative;
+}
+
+.qv-color__chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-strong);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.qv-color__swatch {
+  width: 15px;
+  height: 15px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  flex: none;
+}
+
+.qv-color__value {
+  font-size: 11.5px;
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qv-color__pop {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 6px);
+  left: 0;
+  padding: 9px;
+  border-radius: var(--radius);
+  background: var(--bg-3);
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+  width: 208px;
+}
+
+.qv-color__pop input[type="color"] {
+  width: 100%;
+  height: 34px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.qv-color__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin-top: 7px;
+}
+
+.qv-color__preset {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.qv-color__preset:hover {
+  transform: scale(1.12);
+}
+
+/* ==================================================================
+   Sections
+   ================================================================== */
+
+.qv-section {
+  border-bottom: 1px solid var(--line);
+}
+
+.qv-section__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+}
+
+.qv-section__title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 10px 0;
+  color: var(--text-2);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  flex: 1;
+  text-align: left;
+}
+
+.qv-caret {
+  transition: transform 0.16s;
+  color: var(--text-3);
+  flex: none;
+  transform: rotate(-90deg);
+}
+
+.qv-caret--open {
+  transform: rotate(0deg);
+}
+
+.qv-section__body {
+  padding: 2px 12px 12px;
+}
+
+/* ==================================================================
+   Panels
+   ================================================================== */
+
+.qv-panel__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.qv-panel__actions {
+  padding: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.qv-media-import-row {
+  display: flex;
+  gap: 6px;
+  align-items: stretch;
+}
+
+.qv-panel__note {
+  margin: 9px 0 0;
+  font-size: 11px;
+  color: var(--text-3);
+  line-height: 1.6;
+}
+
+.qv-inspector {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+
+.qv-tabs {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  flex: none;
+}
+
+.qv-inspector__foot {
+  padding: 12px;
+}
+
+.qv-inspector__empty {
+  padding: 16px;
+}
+
+.qv-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 44px 22px;
+  text-align: center;
+}
+
+.qv-empty__icon {
+  color: var(--text-3);
+  opacity: 0.6;
+}
+
+.qv-empty__title {
+  font-size: 13px;
+  color: var(--text-2);
+  font-weight: 600;
+}
+
+.qv-empty__hint {
+  font-size: 11.5px;
+  color: var(--text-3);
+  line-height: 1.6;
+  max-width: 240px;
+}
+
+/* ==================================================================
+   Media pool
+   ================================================================== */
+
+.qv-media-group {
+  padding: 12px 12px 4px;
+}
+
+.qv-media-group__head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--text-3);
+  margin-bottom: 8px;
+}
+
+.qv-media-group__count {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+}
+
+.qv-media-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Search / filter / sort controls above the pool. */
+.qv-media-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 11px;
+}
+
+.qv-media-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.qv-media-search svg {
+  position: absolute;
+  left: 8px;
+  color: var(--text-3);
+  pointer-events: none;
+}
+
+.qv-media-search__input {
+  padding-left: 27px;
+}
+
+.qv-media-tools__meta {
+  font-size: 10.5px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.5;
+}
+
+/* Dot marking an asset that some clip already references. */
+.qv-media-item__used {
+  color: var(--accent-hover);
+  font-size: 9px;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+.qv-media-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.025);
+  transition: background 0.14s, border-color 0.14s;
+}
+
+.qv-media-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--line);
+}
+
+.qv-media-item__thumb {
+  width: 60px;
+  height: 34px;
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--text-3);
+  flex: none;
+}
+
+.qv-media-item__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.qv-media-item__canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.qv-media-item__thumb--video {
+  color: #6fcf97;
+}
+.qv-media-item__thumb--audio {
+  color: #9b8cff;
+}
+.qv-media-item__thumb--image {
+  color: #5aa9e6;
+}
+
+.qv-media-item__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.qv-media-item__name {
+  font-size: 12px;
+  color: var(--text-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qv-media-item__meta {
+  font-size: 10.5px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.qv-media-item__actions {
+  display: flex;
+  gap: 1px;
+  opacity: 0;
+  transition: opacity 0.14s;
+}
+
+.qv-media-item:hover .qv-media-item__actions {
+  opacity: 1;
+}
+
+/* ==================================================================
+   Template gallery
+   ================================================================== */
+
+.qv-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+}
+
+.qv-card {
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  overflow: hidden;
+  transition: border-color 0.16s;
+}
+
+.qv-card:hover {
+  border-color: var(--accent-line);
+}
+
+.qv-card__thumb {
+  position: relative;
+  background: #06070a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.qv-card__canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.qv-card__canvas--on {
+  opacity: 1;
+}
+
+.qv-card__aspect,
+.qv-card__duration {
+  position: absolute;
+  bottom: 7px;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(6, 7, 10, 0.78);
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.qv-card__aspect {
+  left: 7px;
+}
+
+.qv-card__duration {
+  right: 7px;
+}
+
+.qv-card__body {
+  padding: 10px 11px 0;
+}
+
+.qv-card__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.qv-card__desc {
+  font-size: 11px;
+  color: var(--text-3);
+  line-height: 1.55;
+  margin-top: 4px;
+}
+
+.qv-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.qv-tag {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 20px;
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+  border: 1px solid var(--accent-line);
+}
+
+.qv-card__foot {
+  padding: 11px;
+}
+
+.qv-card__hint {
+  font-size: 10.5px;
+  color: var(--text-3);
+  text-align: center;
+  margin-top: 7px;
+}
+
+/* ==================================================================
+   Preview
+   ================================================================== */
+
+.qv-preview {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.qv-preview__stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(201, 118, 64, 0.07), transparent 62%),
+    repeating-conic-gradient(from 0deg, #0d0f14 0deg 90deg, #0a0c11 90deg 180deg);
+  background-size: auto, 22px 22px;
+}
+
+.qv-preview__stage:fullscreen {
+  padding: 0;
+  background: #000;
+}
+
+/* Sized in JS to the project aspect ratio, so the canvas CSS box maps linearly
+   onto project pixels and pointer coordinates need no letterbox correction. */
+.qv-preview__frame {
+  position: relative;
+  flex: none;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  background: #000;
+}
+
+.qv-preview__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  /* Pointer events must not be stolen by scroll/zoom gestures while dragging. */
+  touch-action: none;
+  background: #000;
+}
+
+.qv-preview__hint {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  font-size: 10.5px;
+  color: var(--text-3);
+  background: rgba(6, 7, 10, 0.72);
+  padding: 3px 9px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  opacity: 0;
+  transition: opacity 0.18s;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.qv-preview__stage:hover .qv-preview__hint {
+  opacity: 1;
+}
+
+.qv-preview__fullscreen {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--line-strong);
+  background: rgba(6, 7, 10, 0.7);
+  color: var(--text-2);
+  font-size: 14px;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.16s;
+}
+
+.qv-preview__stage:hover .qv-preview__fullscreen {
+  opacity: 1;
+}
+
+/* Fullscreen overlay: floating progress + play controls. */
+.qv-fs-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  cursor: none;
+  pointer-events: none;
+}
+
+.qv-fs-overlay--on {
+  cursor: default;
+}
+
+.qv-fs-exit {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+
+.qv-fs-overlay--on .qv-fs-exit {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.qv-fs-exit:hover {
+  background: rgba(0, 0, 0, 0.8);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.qv-fs-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px 20px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.82), transparent);
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+
+.qv-fs-overlay--on .qv-fs-bar {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.qv-fs-play {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(180deg, var(--accent-hover), var(--accent));
+  color: #26140a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(201, 118, 64, 0.4);
+}
+
+.qv-fs-play:hover {
+  filter: brightness(1.1);
+}
+
+.qv-fs-tc {
+  flex: none;
+  font-size: 13px;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  min-width: 64px;
+  text-align: center;
+}
+
+.qv-fs-tc--dim {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.qv-fs-scrub {
+  flex: 1;
+  height: 6px;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.qv-fs-scrub::-webkit-slider-thumb {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px rgba(201, 118, 64, 0.3);
+}
+
+.qv-fs-scrub::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: none;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.qv-transport {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 52px;
+  padding: 0 16px;
+  background: var(--bg-1);
+  border-top: 1px solid var(--line);
+  flex: none;
+}
+
+.qv-transport__buttons {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.qv-transport__rate {
+  flex: none;
+}
+
+.qv-transport__rate .qv-seg__item {
+  font-size: 10.5px;
+  padding: 3px 7px;
+}
+
+.qv-play {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(180deg, var(--accent-hover), var(--accent));
+  color: #26140a;
+  box-shadow: 0 3px 12px rgba(201, 118, 64, 0.35);
+}
+
+.qv-play:hover {
+  filter: brightness(1.08);
+}
+
+.qv-transport__time {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: none;
+}
+
+.qv-timecode {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.qv-timecode--dim {
+  font-size: 10.5px;
+  color: var(--text-3);
+}
+
+.qv-scrub {
+  flex: 1;
+  min-width: 60px;
+  appearance: none;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+}
+
+.qv-scrub::-webkit-slider-thumb {
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid #14171f;
+}
+
+.qv-transport__meta {
+  display: flex;
+  gap: 5px;
+  flex: none;
+}
+
+.qv-badge {
+  font-size: 10.5px;
+  padding: 3px 7px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line);
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.qv-badge--dim {
+  color: var(--text-3);
+}
+
+.qv-badge--ok {
+  background: rgba(111, 207, 151, 0.13);
+  border-color: rgba(111, 207, 151, 0.35);
+  color: #a8ecc4;
+}
+
+/* ==================================================================
+   Timeline
+   ================================================================== */
+
+/* Draggable divider between the preview and the timeline. */
+.qv-hdivider {
+  position: relative;
+  height: 6px;
+  flex: none;
+  cursor: ns-resize;
+  background: transparent;
+}
+
+.qv-hdivider::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.16);
+  transition: background 0.14s, width 0.14s;
+}
+
+.qv-hdivider:hover::after {
+  background: var(--accent);
+  width: 72px;
+}
+
+.qv-vdivider {
+  position: relative;
+  width: 6px;
+  flex: none;
+  cursor: ew-resize;
+  background: transparent;
+  z-index: 2;
+}
+
+.qv-vdivider::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 3px;
+  height: 48px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.16);
+  transition: background 0.14s, height 0.14s;
+}
+
+.qv-vdivider:hover::after {
+  background: var(--accent);
+  height: 72px;
+}
+
+.qv-timeline {
+  /* Overridden inline by the resize handle; this is only the initial value. */
+  height: 286px;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-1);
+  border-top: 1px solid var(--line-strong);
+  flex: none;
+}
+
+.qv-timeline__bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--line);
+  flex: none;
+}
+
+.qv-timeline__title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.qv-timeline__count {
+  font-size: 10.5px;
+  color: var(--text-3);
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Marquee (rubber-band) selection. */
+.qv-marquee {
+  position: absolute;
+  z-index: 18;
+  pointer-events: none;
+  border: 1px solid var(--accent);
+  background: rgba(201, 118, 64, 0.16);
+  border-radius: 3px;
+}
+
+/* Drop target chrome while dragging an asset from the media pool. */
+.qv-droptarget {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 15;
+  pointer-events: none;
+  background: rgba(111, 207, 151, 0.07);
+  box-shadow: inset 0 0 0 1px rgba(111, 207, 151, 0.35);
+}
+
+.qv-dropbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 16;
+  pointer-events: none;
+}
+
+.qv-dropbar__ghost {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  border-radius: 5px;
+  background: rgba(111, 207, 151, 0.22);
+  border: 1px dashed rgba(111, 207, 151, 0.75);
+}
+
+.qv-dropbar__line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #6fcf97;
+  box-shadow: 0 0 8px rgba(111, 207, 151, 0.8);
+}
+
+.qv-row__head--drop {
+  box-shadow: inset 2px 0 0 #6fcf97;
+}
+
+.qv-row__body--drop {
+  background: rgba(111, 207, 151, 0.06);
+}
+
+/* Cursor-following chip while dragging an asset. */
+.qv-drag-ghost {
+  position: fixed;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: rgba(21, 25, 36, 0.96);
+  border: 1px solid var(--accent-line);
+  color: var(--text-1);
+  font-size: 11.5px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  max-width: 240px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Timecode tooltip that follows the ruler while scrubbing. */
+.qv-ruler__cursor {
+  position: absolute;
+  top: 100%;
+  margin-top: 2px;
+  transform: translateX(-50%);
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(6, 7, 10, 0.92);
+  border: 1px solid var(--accent-line);
+  color: var(--accent-hover);
+  font-size: 10px;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 22;
+}
+
+.qv-timeline__tools {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.qv-timeline__sep {
+  width: 1px;
+  height: 18px;
+  background: var(--line-strong);
+  margin: 0 3px;
+  flex: none;
+}
+
+.qv-timeline__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  position: relative;
+}
+
+.qv-timeline__grid {
+  position: relative;
+  min-height: 100%;
+}
+
+/*
+ * Each row is its own stacking context, so the sticky header's z-index is always
+ * resolved against the clips in the *same* row. Without this the header could be
+ * outranked by a positioned descendant and clips would paint over the names.
+ */
+.qv-row {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.045);
+  isolation: isolate;
+}
+
+.qv-row--ruler {
+  position: sticky;
+  top: 0;
+  z-index: 12;
+  background: var(--bg-2);
+}
+
+.qv-row--section {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/*
+ * Track header.
+ *
+ * One line: icon, name, sub-lane badge, then the buttons. A stacked layout did
+ * not fit a single-lane row (38px) — the name plus a row of 28px buttons needs
+ * about 48px — so the content spilled out of the row and got clipped, which is
+ * what made the track names unreadable.
+ */
+.qv-row__head {
+  position: sticky;
+  left: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  background: var(--bg-1);
+  border-right: 1px solid var(--line-strong);
+  flex: none;
+  /* Backstop: nothing may escape the header box, whatever the content. */
+  overflow: hidden;
+}
+
+/* Smaller buttons inside the header, so four of them plus a name still fit. */
+.qv-row__head .qv-icon-btn {
+  width: 22px;
+  height: 22px;
+}
+
+/*
+ * The active row is tinted with a gradient *over* an opaque background. `background:`
+ * would reset the colour to transparent, leaving the header see-through — which is
+ * how clips ended up visible on top of the track names once the timeline was
+ * scrolled.
+ */
+.qv-row__head--active {
+  background-color: var(--bg-1);
+  background-image: linear-gradient(90deg, rgba(201, 118, 64, 0.16), rgba(201, 118, 64, 0.03));
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+.qv-row__head--ruler {
+  z-index: 14;
+  background: var(--bg-2);
+  justify-content: flex-start;
+}
+
+.qv-row__head--section {
+  z-index: 12;
+  background: var(--bg-2);
+  font-size: 10.5px;
+  color: var(--text-3);
+  letter-spacing: 0.06em;
+  justify-content: flex-start;
+}
+
+.qv-row__hint {
+  font-size: 10.5px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.qv-row__name {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  color: var(--text-2);
+  /* `min-width: 0` is what actually lets the label shrink; without it a nowrap
+     span refuses to go below its content width and pushes the badge out. */
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* The kind icon must keep its size while the label gives way. */
+.qv-row__name > svg {
+  flex: none;
+}
+
+/*
+ * The ellipsis has to live on the element that owns the text. Putting
+ * `text-overflow` on the flex parent (as it was) does nothing and the name gets
+ * chopped mid-character instead.
+ */
+.qv-row__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Badge shown when a track holds time-overlapping clips packed into sub-lanes. */
+.qv-row__lanes {
+  font-size: 9.5px;
+  padding: 1px 5px;
+  border-radius: 20px;
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+  border: 1px solid var(--accent-line);
+  flex: none;
+}
+
+.qv-row__actions {
+  display: flex;
+  gap: 1px;
+  opacity: 0.45;
+  transition: opacity 0.14s;
+  flex: none;
+  margin-left: auto;
+}
+
+.qv-row__head:hover .qv-row__actions {
+  opacity: 1;
+}
+
+.qv-row__body {
+  position: relative;
+  flex: none;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.qv-row__body--locked {
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.02) 0 6px,
+    transparent 6px 12px
+  );
+}
+
+.qv-ruler {
+  position: relative;
+  height: 100%;
+  flex: none;
+  cursor: ew-resize;
+}
+
+.qv-ruler__tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.qv-ruler__label {
+  position: absolute;
+  top: 7px;
+  left: 4px;
+  font-size: 10px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Clips */
+
+.qv-clip {
+  position: absolute;
+  /* `top` and `height` come from the packed sub-lane assignment, so clips that
+     overlap in time stack into separate lanes instead of painting over each
+     other and turning the track into an unreadable smear. */
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-left-width: 3px;
+  overflow: hidden;
+  cursor: grab;
+  transition: box-shadow 0.12s;
+}
+
+.qv-clip:hover {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+}
+
+.qv-clip--on {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 3px 12px rgba(201, 118, 64, 0.28);
+}
+
+.qv-clip--off {
+  opacity: 0.4;
+}
+
+.qv-clip__inner {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 7px;
+  height: 100%;
+  pointer-events: none;
+  /* 抬到转场楔形之上：楔形是绝对定位元素，否则会盖住片段名。 */
+  position: relative;
+  z-index: 1;
+}
+
+.qv-clip__name {
+  font-size: 10.5px;
+  color: var(--text-1);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.qv-clip__icon {
+  display: flex;
+  flex: none;
+}
+
+.qv-clip__kf {
+  width: 5px;
+  height: 5px;
+  background: var(--warn);
+  transform: rotate(45deg);
+  flex: none;
+}
+
+/*
+ * Grab strip over the keyframe diamond row.
+ *
+ * Presses that do not land on a diamond fall through to the clip's own drag
+ * handler, so the strip is never dead space.
+ */
+.qv-clip__kf-lane {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 0;
+  height: 12px;
+  z-index: 1;
+  cursor: ew-resize;
+}
+
+.qv-clip__dur {
+  position: absolute;
+  right: 7px;
+  bottom: 4px;
+  font-size: 9.5px;
+  color: rgba(255, 255, 255, 0.55);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+/*
+ * 入场/出场转场的楔形标志。
+ *
+ * 转场是模型里的一等公民，但在时间线上原本一点痕迹都没有——只有关键帧菱形在说明
+ * "有动画"。这里在片段头尾各画一块半透明楔形按时长展开，形状沿用剪辑软件的惯例
+ * （入场从下往上抬、出场从上往下落）。
+ *
+ * `pointer-events: none` 是必须的：这块区域有几十像素宽，吃掉指针事件就等于在片段
+ * 中间挖出一块拖不动的死区。细节交给片段的 tooltip 和检查器的「转场」区。
+ */
+.qv-clip__trans {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.26);
+}
+
+.qv-clip__trans--in {
+  left: 0;
+  clip-path: polygon(0 100%, 100% 0, 100% 100%);
+}
+
+.qv-clip__trans--out {
+  right: 0;
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+}
+
+.qv-clip__handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  cursor: ew-resize;
+  z-index: 2;
+}
+
+.qv-clip__handle:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.qv-clip__handle--left {
+  left: 0;
+}
+
+.qv-clip__handle--right {
+  right: 0;
+}
+
+/*
+ * Magnet guide: above the clips, below the sticky headers (z-index 10) so it is
+ * hidden behind the track names rather than drawn across them.
+ */
+.qv-snap-guide {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: #e8b84b;
+  box-shadow: 0 0 6px rgba(232, 184, 75, 0.8);
+  pointer-events: none;
+  z-index: 6;
+}
+
+.qv-playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: var(--accent-hover);
+  box-shadow: 0 0 8px rgba(226, 154, 90, 0.7);
+  pointer-events: none;
+  /* Below the track headers (10) so the line stops at the header edge instead of
+     being drawn over the track names. */
+  z-index: 8;
+  will-change: transform;
+}
+
+.qv-playhead__cap {
+  position: absolute;
+  top: 0;
+  left: -5px;
+  width: 12px;
+  height: 11px;
+  background: var(--accent-hover);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+
+/* ==================================================================
+   Inspector extras
+   ================================================================== */
+
+.qv-kf-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.qv-kf-row {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.qv-kf-row__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 7px;
+}
+
+.qv-kf-row__path {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--accent-hover);
+}
+
+.qv-kf-row__frames {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 9px;
+}
+
+.qv-kf-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 6px;
+  border-radius: 5px;
+  border: 1px solid var(--line-strong);
+  background: rgba(0, 0, 0, 0.3);
+  font-size: 10px;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.qv-kf-chip:hover {
+  border-color: var(--accent-line);
+}
+
+.qv-kf-chip__value {
+  color: var(--text-3);
+}
+
+.qv-kf-chip__del {
+  color: var(--text-3);
+  padding: 0 1px;
+}
+
+.qv-kf-chip__del:hover {
+  color: var(--danger);
+}
+
+.qv-quick-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.qv-transition-row {
+  padding: 4px 0;
+}
+
+.qv-tpl-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 13px 12px;
+  border-bottom: 1px solid var(--line);
+  color: var(--accent-hover);
+}
+
+.qv-tpl-head__name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.qv-tpl-head__meta {
+  font-size: 10.5px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+/* ==================================================================
+   Modal / dialogs
+   ================================================================== */
+
+.qv-modal__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(4, 5, 8, 0.68);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qv-modal {
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.62);
+  max-width: calc(100vw - 40px);
+  max-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+}
+
+.qv-modal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.qv-modal__body {
+  padding: 14px;
+  overflow-y: auto;
+}
+
+.qv-modal__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 14px;
+  border-top: 1px solid var(--line);
+}
+
+.qv-kv {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  font-size: 12px;
+  border-bottom: 1px dashed var(--line);
+  color: var(--text-2);
+}
+
+.qv-kv span:last-child {
+  color: var(--text-1);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* How much of the source file a clip uses, shown under the trim fields. */
+.qv-usage {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 7px;
+  font-size: 10.5px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.qv-usage--over {
+  color: var(--warn);
+}
+
+.qv-usage__warn {
+  color: var(--warn);
+}
+
+/* Quick speed buttons under the speed NumberInput in the inspector. */
+.qv-speed-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.qv-speed-presets__btn {
+  flex: 1 1 auto;
+  min-width: 38px;
+  height: 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-3);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  transition: background 0.14s, color 0.14s, border-color 0.14s;
+}
+
+.qv-speed-presets__btn:hover {
+  color: var(--text-1);
+  border-color: var(--text-3);
+}
+
+.qv-speed-presets__btn--on {
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+  border-color: var(--accent-line);
+}
+
+/* One-tap filter preset chips at the top of the effects tab. */
+.qv-filter-presets {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.qv-filter-presets__btn {
+  height: 28px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-3);
+  font-size: 11.5px;
+  transition: background 0.14s, color 0.14s, border-color 0.14s;
+}
+
+.qv-filter-presets__btn:hover {
+  color: var(--text-1);
+  border-color: var(--text-3);
+}
+
+.qv-filter-presets__btn--on {
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+  border-color: var(--accent-line);
+}
+
+.qv-alert {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 11px;
+  border-radius: var(--radius-sm);
+  font-size: 11.5px;
+  line-height: 1.55;
+  margin-top: 11px;
+}
+
+.qv-alert--error {
+  background: rgba(232, 106, 124, 0.13);
+  border: 1px solid rgba(232, 106, 124, 0.35);
+  color: #ffc0c9;
+}
+
+.qv-alert--ok {
+  background: rgba(111, 207, 151, 0.13);
+  border: 1px solid rgba(111, 207, 151, 0.35);
+  color: #b8f0cf;
+}
+
+.qv-alert--warn {
+  flex-direction: column;
+  align-items: flex-start;
+  background: rgba(232, 184, 75, 0.12);
+  border: 1px solid rgba(232, 184, 75, 0.32);
+  color: #ffe2a0;
+}
+
+.qv-alert--info {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-line);
+  color: var(--accent-hover);
+}
+
+.qv-export-progress {
+  margin-top: 13px;
+}
+
+.qv-export-progress__hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 7px;
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.qv-progress__track {
+  height: 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.qv-progress__fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--accent-deep), var(--accent-hover));
+  transition: width 0.18s linear;
+}
+
+.qv-progress__label {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.qv-spin {
+  animation: qv-spin 0.9s linear infinite;
+}
+
+@keyframes qv-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==================================================================
+   Status bar
+   ================================================================== */
+
+.qv-statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 27px;
+  padding: 0 12px;
+  background: var(--bg-2);
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+  color: var(--text-3);
+  flex: none;
+}
+
+.qv-status--error {
+  color: #ffb0bb;
+}
+
+.qv-status--success {
+  color: #a8ecc4;
+}
+
+.qv-statusbar__right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.qv-kf-row__hint {
+  font-size: 10px;
+  color: var(--text-3);
+  margin-top: 7px;
+  line-height: 1.5;
+}
+
+.qv-kf-row__tools {
+  display: flex;
+  gap: 1px;
+}
+
+.qv-kf-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.qv-kf-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 6px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid var(--line);
+}
+
+.qv-kf-item__row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.qv-kf-item__row > * {
+  min-width: 0;
+}
+
+.qv-kf-item__seek {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 26px;
+  flex: none;
+  border-radius: 5px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--text-3);
+}
+
+.qv-kf-item__seek:hover {
+  background: var(--bg-hover);
+  color: var(--accent-hover);
+}
+
+/* Offline (missing) media. */
+.qv-offline-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 12px;
+  padding: 10px 11px;
+  border-radius: var(--radius-sm);
+  background: rgba(232, 184, 75, 0.12);
+  border: 1px solid rgba(232, 184, 75, 0.32);
+  color: #ffe2a0;
+  font-size: 11.5px;
+  line-height: 1.55;
+}
+
+.qv-offline-banner__hint {
+  margin-top: 4px;
+  color: rgba(255, 226, 160, 0.75);
+  font-size: 11px;
+}
+
+.qv-media-item--offline {
+  border-color: rgba(232, 184, 75, 0.34);
+  background: rgba(232, 184, 75, 0.07);
+}
+
+.qv-media-item--offline .qv-media-item__thumb {
+  color: var(--warn);
+}
+
+.qv-media-item--offline .qv-media-item__actions {
+  opacity: 1;
+}
+
+/* ==================================================================
+   Right-click menu
+   ================================================================== */
+
+.qv-menu {
+  position: fixed;
+  z-index: 300;
+  min-width: 196px;
+  padding: 4px;
+  border-radius: 9px;
+  background: var(--bg-3);
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.58);
+}
+
+.qv-menu__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  width: 100%;
+  padding: 6px 9px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-2);
+  font-size: 12px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.qv-menu__item:hover:not(:disabled) {
+  background: var(--accent-soft);
+  color: var(--text-1);
+}
+
+.qv-menu__item:disabled {
+  opacity: 0.34;
+  cursor: not-allowed;
+}
+
+.qv-menu__item--danger {
+  color: var(--danger);
+}
+
+.qv-menu__item--danger:hover:not(:disabled) {
+  background: rgba(232, 106, 124, 0.16);
+}
+
+.qv-menu__shortcut {
+  color: var(--text-3);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.qv-menu__sep {
+  height: 1px;
+  margin: 4px 2px;
+  background: var(--line);
+}
+
+/* ==================================================================
+   Clip artwork (thumbnail / waveform / keyframe markers)
+   ================================================================== */
+
+.qv-clip__art-wrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: 4px;
+}
+
+.qv-clip__art {
+  display: block;
+}
+
+/* The label sits above the artwork, so it needs its own contrast. */
+.qv-clip__inner {
+  position: relative;
+  z-index: 1;
+}
+
+.qv-clip__name,
+.qv-clip__dur {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+}
+
+.qv-clip__dur {
+  z-index: 1;
+}
+
+/* Inline rename, for clips and tracks. */
+.qv-clip__rename {
+  position: absolute;
+  inset: 2px;
+  z-index: 3;
+  width: auto;
+  height: auto;
+  padding: 0 5px;
+  border-radius: 3px;
+  border: 1px solid var(--accent);
+  background: #0c0e14;
+  color: var(--text-1);
+  font-size: 10.5px;
+  user-select: text;
+}
+
+.qv-clip__rename:focus {
+  outline: none;
+}
+
+.qv-row__rename {
+  height: 20px;
+  padding: 0 5px;
+  font-size: 11px;
+  border-radius: 4px;
+}
+
+.qv-row__label {
+  cursor: text;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==================================================================
+   Start page (home)
+   ================================================================== */
+
+.qv-brand__home {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 10px;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  background: transparent;
+  color: var(--text-2);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.14s, color 0.14s, border-color 0.14s;
+}
+
+.qv-brand__home:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+  color: var(--accent-hover);
+}
+
+.qv-home {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 32px 40px 48px;
+  background: linear-gradient(180deg, var(--bg-0), var(--bg-1) 40%);
+}
+
+.qv-home__hero {
+  margin-bottom: 28px;
+}
+
+.qv-home__title {
+  margin: 0 0 8px;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  background: linear-gradient(96deg, var(--accent-hover), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.qv-home__sub {
+  margin: 0;
+  color: var(--text-3);
+  font-size: 13.5px;
+}
+
+.qv-home__actions {
+  margin-top: 18px;
+}
+
+.qv-home__section {
+  margin-bottom: 28px;
+}
+
+.qv-home__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.qv-home__head h2 {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+.qv-home__head h2 svg {
+  color: var(--accent);
+}
+
+.qv-home__count {
+  color: var(--text-3);
+  font-size: 12px;
+}
+
+.qv-home__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+  gap: 18px;
+}
+
+.qv-home__card {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius);
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.16s ease, border-color 0.16s, box-shadow 0.16s;
+}
+
+.qv-home__card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent-line);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.32);
+}
+
+.qv-home__card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.qv-home__thumb {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+}
+
+.qv-home__initial {
+  font-size: 46px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.78);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.qv-home__chip {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  padding: 3px 8px;
+  border-radius: 99px;
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--text-1);
+  font-size: 11px;
+  font-weight: 600;
+  backdrop-filter: blur(4px);
+}
+
+.qv-home__chip--dur {
+  left: auto;
+  right: 8px;
+}
+
+.qv-home__remove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 7px;
+  background: rgba(0, 0, 0, 0.55);
+  color: var(--text-2);
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: background 0.14s, color 0.14s;
+}
+
+.qv-home__remove:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+.qv-home__meta {
+  padding: 10px 12px 12px;
+}
+
+.qv-home__name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.qv-home__time {
+  margin-top: 4px;
+  font-size: 11.5px;
+  color: var(--text-3);
+}
+
+.qv-home__foot {
+  padding: 0 12px 12px;
+}
+
+.qv-home__templates {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.qv-home__group-label {
+  margin-bottom: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-3);
+  text-transform: uppercase;
+}
+
+/* ==================================================================
+   Shortcuts dialog
+   ================================================================== */
+
+.qv-shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 28px;
+}
+
+.qv-shortcuts__group {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.qv-shortcuts__title {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 6px;
+}
+
+.qv-shortcuts__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.qv-shortcuts__table tr {
+  border-bottom: 1px solid var(--line);
+}
+
+.qv-shortcuts__table tr:last-child {
+  border-bottom: none;
+}
+
+.qv-shortcuts__key {
+  width: 130px;
+  padding: 5px 0;
+}
+
+.qv-shortcuts__key kbd {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  color: var(--text-1);
+  white-space: nowrap;
+}
+
+.qv-shortcuts__desc {
+  padding: 5px 0;
+  font-size: 12.5px;
+  color: var(--text-2);
+}
+
+/* ==================================================================
+   Goto dialog
+   ================================================================== */
+
+.qv-goto {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.qv-goto__error {
+  font-size: 12px;
+  color: #f0a0a0;
+}
+
+.qv-goto__hint {
+  font-size: 11.5px;
+  color: var(--text-3);
+  font-family: var(--font-mono);
+}
+
+/* ==================================================================
+   In/out point chips (transport)
+   ================================================================== */
+
+.qv-transport__inout {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex: none;
+}
+
+.qv-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px 2px 6px;
+  border-radius: 5px;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-2);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.qv-mark--in {
+  border-color: rgba(111, 207, 151, 0.4);
+  background: rgba(111, 207, 151, 0.1);
+}
+
+.qv-mark--out {
+  border-color: rgba(201, 118, 64, 0.4);
+  background: rgba(201, 118, 64, 0.1);
+}
+
+.qv-mark__label {
+  font-weight: 700;
+  font-size: 10px;
+  color: var(--text-2);
+}
+
+.qv-mark--in .qv-mark__label {
+  color: #a8ecc4;
+}
+
+.qv-mark--out .qv-mark__label {
+  color: var(--accent-hover);
+}
+
+.qv-mark__tc {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-1);
+}
+
+.qv-mark__clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: none;
+  background: transparent;
+  color: var(--text-3);
+  cursor: pointer;
+  padding: 0;
+}
+
+.qv-mark__clear:hover {
+  background: var(--bg-hover);
+  color: var(--text-1);
+}
+
+/* ==================================================================
+   Disabled toggle
+   ================================================================== */
+
+.qv-toggle--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.qv-toggle--disabled .qv-toggle__knob {
+  cursor: not-allowed;
+}
+
+/* ==================================================================
+   Template picker dialog
+   ================================================================== */
+
+.qv-tpicker {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.qv-tpicker__group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.qv-tpicker__label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-3);
+  text-transform: uppercase;
+}
+
+.qv-tpicker__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.qv-tpicker__card {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius);
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.16s ease, border-color 0.16s, box-shadow 0.16s;
+}
+
+.qv-tpicker__card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent-line);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.32);
+}
+
+.qv-tpicker__card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.qv-tpicker__thumb {
+  position: relative;
+  background: #06070a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.qv-tpicker__canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.qv-tpicker__canvas--on {
+  opacity: 1;
+}
+
+.qv-tpicker__chip {
+  position: absolute;
+  bottom: 7px;
+  left: 7px;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(6, 7, 10, 0.78);
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+  backdrop-filter: blur(4px);
+}
+
+.qv-tpicker__chip--dur {
+  left: auto;
+  right: 7px;
+}
+
+.qv-tpicker__body {
+  padding: 10px 12px 12px;
+}
+
+.qv-tpicker__name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.qv-tpicker__desc {
+  font-size: 11px;
+  color: var(--text-3);
+  line-height: 1.55;
+  margin-top: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.qv-tpicker__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.qv-tpicker__tag {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 20px;
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+  border: 1px solid var(--accent-line);
+}
+
+.qv-tpicker__cat {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text-3);
+}

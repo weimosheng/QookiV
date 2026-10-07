@@ -1,0 +1,22 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Vite build output
+dist
+
+# Player bundle is rebuilt from source; dev and export fetch it at runtime
+public/qookiv-player.js
+
+# Local scratch space: probe scripts, bundles and smoke-test output
+.scratch
+
+# Logs
+*.log
+
+# VS Code (keep shared extension recommendations)
+.vscode/*
+!.vscode/extensions.json
+
+# Local env overrides (.env.local, *.local)
+*.local

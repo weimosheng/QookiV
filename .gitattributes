@@ -1,0 +1,23 @@
+# 统一换行：仓库内存 LF，工作区检出也用 LF。
+# 本项目是纯前端 + Rust，没有任何工具依赖 CRLF。
+* text=auto eol=lf
+
+# 二进制资源，禁止任何换行转换
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.webp  binary
+*.gif   binary
+*.ico   binary
+*.icns  binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.mp4   binary
+*.mov   binary
+*.mp3   binary
+*.wav   binary
+
+# 锁文件体积大、diff 噪音高，评审时按生成物对待
+pnpm-lock.yaml       -diff linguist-generated
+src-tauri/Cargo.lock -diff linguist-generated

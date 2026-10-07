@@ -1,0 +1,43 @@
+{
+  "name": "qookiv",
+  "private": true,
+  "version": "0.1.0",
+  "description": "面向软件宣传片的桌面视频编辑器",
+  "license": "GPL-3.0-only",
+  "author": "weimosheng",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/weimosheng/QookiV.git"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "build:player": "vite build --config vite.player.config.ts",
+    "build:all": "npm run build:player && npm run build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "smoke": "vite build --config vite.smoke.config.ts && node .scratch/smoke.js",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-dialog": "^2.8.1",
+    "@tauri-apps/plugin-fs": "^2.6.0",
+    "@tauri-apps/plugin-opener": "^2",
+    "lucide-react": "^1.52.0",
+    "mp4-muxer": "^5.2.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^6.0.2",
+    "typescript": "~6.0.3",
+    "vite": "^8.0.16"
+  },
+  "packageManager": "pnpm@12.9.1+sha512.06b055fff5cd20dc12781de173ced3310ce0951bf2ec620211a16045d5444d5c93a663210764ef29a653a610459ba0368f0e74f84d80c54723cf95aae7bc0d6d"
+}
