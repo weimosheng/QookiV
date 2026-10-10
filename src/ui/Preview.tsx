@@ -12,7 +12,7 @@ import type { HandleId, LayerPlacement } from "../render/scene";
 import { useEditor } from "../store/editorStore";
 import { IconButton, Segmented } from "./controls";
 import type { Option } from "./controls";
-import { Camera, Pause, Play, Repeat, SkipBack, SkipForward, X } from "./icons";
+import { Camera, Eye, EyeOff, Pause, Play, Repeat, SkipBack, SkipForward, X } from "./icons";
 import { useElementSize, useInOutPoints, usePlayhead, usePlaying, useRate } from "./hooks";
 import { exportCurrentFrame } from "../services/exportFrame";
 
@@ -70,6 +70,7 @@ export function Preview() {
   const guidesRef = useRef({ x: false, y: false });
 
   const [hoverId, setHoverId] = useState<string | null>(null);
+  const [cleanPreview, setCleanPreview] = useState(false);
   hoverRef.current = hoverId;
 
   if (!rendererRef.current) rendererRef.current = new Renderer(project, mediaPool);
@@ -78,9 +79,10 @@ export function Preview() {
   /* ---------------- stage sizing ---------------- */
 
   const [stageEl, stageSize] = useElementSize<HTMLDivElement>();
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const { width: pw, height: ph } = project.settings;
   const fitted = useMemo(() => {
-    const pad = 34;
+    const pad = isFullscreen ? 0 : 34;
     const availW = Math.max(80, (stageSize.width || 640) - pad);
     const availH = Math.max(60, (stageSize.height || 360) - pad);
     const scale = Math.min(availW / pw, availH / ph);
@@ -89,7 +91,7 @@ export function Preview() {
       height: Math.max(30, Math.floor(ph * scale)),
       scale: Math.max(1e-6, scale),
     };
-  }, [stageSize.width, stageSize.height, pw, ph]);
+  }, [stageSize.width, stageSize.height, pw, ph, isFullscreen]);
   viewScaleRef.current = fitted.scale;
 
   /* ---------------- project / media sync ---------------- */
@@ -169,8 +171,9 @@ export function Preview() {
          */
         const exact = playback.epoch !== lastEpoch;
         lastEpoch = playback.epoch;
-        mediaPool.playVideos(project, time, { exact });
-        mediaPool.playAudio(project, time, { exact });
+        const rate = playback.rate;
+        mediaPool.playVideos(project, time, { exact, rate });
+        mediaPool.playAudio(project, time, { exact, rate });
       } else if (wasPlaying) {
         mediaPool.pauseAll();
       }
@@ -180,8 +183,8 @@ export function Preview() {
       placementsRef.current = placements;
 
       // Manipulation chrome is drawn on the same canvas so it cannot drift from
-      // the pixels, and is suppressed during playback so the cut plays clean.
-      if (!playing) {
+      // the pixels, and is suppressed during playback or in clean preview mode.
+      if (!playing && !cleanPreview) {
         drawOverlay(ctx, project, placements, selectionRef.current, {
           viewScale: viewScaleRef.current,
           interactive: true,
@@ -191,7 +194,7 @@ export function Preview() {
         });
       }
     });
-  }, [project, renderer, pw]);
+  }, [project, renderer, pw, cleanPreview]);
 
   /* ---------------- pointer interaction ---------------- */
 
@@ -467,7 +470,6 @@ export function Preview() {
     else void el.requestFullscreen().catch(() => undefined);
   };
 
-  const [isFullscreen, setIsFullscreen] = useState(false);
   useEffect(() => {
     const onChange = () => setIsFullscreen(!!document.fullscreenElement);
     document.addEventListener("fullscreenchange", onChange);
@@ -495,31 +497,48 @@ export function Preview() {
           <canvas
             ref={canvasRef}
             className="qv-preview__canvas"
+            style={cleanPreview ? { cursor: "default", pointerEvents: "none" } : undefined}
             width={pw}
             height={ph}
-            onPointerDown={onPointerDown}
-            onPointerMove={onPointerMoveHover}
-            onPointerLeave={() => {
-              if (hoverRef.current !== null) {
-                setHoverId(null);
-                redraw();
-              }
-            }}
+            onPointerDown={cleanPreview ? undefined : onPointerDown}
+            onPointerMove={cleanPreview ? undefined : onPointerMoveHover}
+            onPointerLeave={
+              cleanPreview
+                ? undefined
+                : () => {
+                    if (hoverRef.current !== null) {
+                      setHoverId(null);
+                      redraw();
+                    }
+                  }
+            }
           />
         </div>
-        {!isFullscreen && (
+        {!isFullscreen && !cleanPreview && (
           <div className="qv-preview__hint">
             在预览中直接拖动元素可移动，拖角点缩放，拖顶部圆点旋转；Shift 锁定方向
           </div>
         )}
-        <button
-          type="button"
-          className="qv-preview__fullscreen"
-          title="全屏预览 (F11)"
-          onClick={toggleFullscreen}
-        >
-          ⤢
-        </button>
+        {!isFullscreen && (
+          <button
+            type="button"
+            className="qv-preview__mode"
+            title={cleanPreview ? "切换编辑模式" : "切换纯预览模式"}
+            onClick={() => setCleanPreview((v) => !v)}
+          >
+            {cleanPreview ? <Eye size={14} /> : <EyeOff size={14} />}
+          </button>
+        )}
+        {!isFullscreen && (
+          <button
+            type="button"
+            className="qv-preview__fullscreen"
+            title="全屏预览 (F11)"
+            onClick={toggleFullscreen}
+          >
+            ⤢
+          </button>
+        )}
         {isFullscreen && <FullscreenOverlay onExit={toggleFullscreen} />}
       </div>
       <Transport />

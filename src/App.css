@@ -1306,6 +1306,11 @@ select {
   background: #000;
 }
 
+.qv-preview__stage:fullscreen .qv-preview__frame {
+  border-radius: 0;
+  box-shadow: none;
+}
+
 /* Sized in JS to the project aspect ratio, so the canvas CSS box maps linearly
    onto project pixels and pointer coordinates need no letterbox correction. */
 .qv-preview__frame {
@@ -1365,6 +1370,27 @@ select {
 }
 
 .qv-preview__stage:hover .qv-preview__fullscreen {
+  opacity: 1;
+}
+
+.qv-preview__mode {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--line-strong);
+  background: rgba(6, 7, 10, 0.7);
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.16s;
+}
+
+.qv-preview__stage:hover .qv-preview__mode {
   opacity: 1;
 }
 

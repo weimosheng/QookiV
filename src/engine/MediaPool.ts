@@ -853,7 +853,7 @@ export class MediaPool implements MediaProvider {
   }
 
   /** Starts every video element that should be playing at `time`. */
-  playVideos(project: Project, time: Seconds, opts: { exact?: boolean } = {}): void {
+  playVideos(project: Project, time: Seconds, opts: { exact?: boolean; rate?: number } = {}): void {
     /*
      * 每条素材在同一时刻只能有一个"主人"。
      *
@@ -918,7 +918,7 @@ export class MediaPool implements MediaProvider {
 
       // Skip the drift correction while a seek is still in flight.
       if (!entry.seeking) {
-        this.syncElement(entry, sourceTime, true, clip.speed, opts.exact === true, clip.name);
+        this.syncElement(entry, sourceTime, true, clip.speed * (opts.rate ?? 1), opts.exact === true, clip.name);
       }
       this.startPlayback(el, entry.sync);
     }
@@ -940,7 +940,7 @@ export class MediaPool implements MediaProvider {
       entry.sync.justPaused = true;
     }
   }
-  playAudio(project: Project, time: Seconds, opts: { exact?: boolean } = {}): void {
+  playAudio(project: Project, time: Seconds, opts: { exact?: boolean; rate?: number } = {}): void {
     // 同一个素材的多个音频片段同样只能有一个主人（理由见 `playVideos`）。
     const owners = new Map<string, { clip: AudioClip; sourceTime: number; local: number }>();
 
@@ -981,7 +981,7 @@ export class MediaPool implements MediaProvider {
         continue;
       }
 
-      this.syncElement(entry, sourceTime, true, clip.speed, opts.exact === true, clip.name);
+      this.syncElement(entry, sourceTime, true, clip.speed * (opts.rate ?? 1), opts.exact === true, clip.name);
       this.startPlayback(el, entry.sync);
     }
 
